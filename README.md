@@ -15,3 +15,4 @@ If you found some bugs, please report them to my github page.
 Start the start.bat file.
 
 Unknowcheats: 
+https://www.unknowncheats.me/forum/other-games/605947-forza-motorsport-auto-farm-helper.html#post3884400
