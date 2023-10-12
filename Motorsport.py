@@ -2,6 +2,8 @@ import curses
 import time
 import os
 import pyautogui
+import random
+import subprocess
 
 def get_duration(stdscr):
     curses.echo()
@@ -10,6 +12,23 @@ def get_duration(stdscr):
     dm = stdscr.getstr(10, 31, 5)
     curses.noecho()
     return int(dm)
+
+def execute_option3(stdscr):
+    global altf4
+    global input_delay
+    stdscr.clear()
+    stdscr.refresh()
+    altf4 = False
+    input_delay_in = get_input(stdscr, "Input delay: ", 10)
+    close = get_input(stdscr, "Close game after finishing race: ", 11)
+    input_delay = int(input_delay_in)
+    closing = int(close)
+    if closing == 0:
+        pass
+    if closing == 1:
+        altf4 = True
+    curses.noecho()
+    return altf4, input_delay
 
 def get_input(stdscr, prompt, line_number):
     curses.echo()
@@ -26,7 +45,7 @@ def execute_option1(stdscr):
     dm = get_duration(stdscr)
     stdscr.clear()
     stdscr.refresh()
-    enter(dm, stdscr)
+    enter(dm, stdscr, altf4, input_delay)
 
 def execute_option2(stdscr):
     stdscr.clear()
@@ -58,20 +77,44 @@ def execute_option2(stdscr):
     stdscr.refresh()
     time.sleep(4)
 
-def enter(dm, stdscr):
+def enter(dm, stdscr, close, delay):
     global times
     times = 0
     end_time = time.time() + dm * 60
+    list1 = ['s', 'w', 'a', 'd']
     try:
-        while time.time() < end_time:
-            pyautogui.press('s')
-            info_text = f'Pressed [{times}] times'
-            ending = f'Ending at {time.strftime("%H:%M:%S", time.localtime(end_time))}'
-            stdscr.addstr(12, 0, info_text)
-            stdscr.addstr(13, 0, ending)
-            stdscr.refresh()
-            times += 1
-            time.sleep(30)
+        while True:
+            if time.time() < end_time:
+                key = random.choice(list1)
+                pyautogui.press(key)
+                info_text = f'Pressed [{times}] times'
+                ending = f'Ending at {time.strftime("%H:%M:%S", time.localtime(end_time))}'
+                stdscr.addstr(12, 0, info_text)
+                stdscr.addstr(13, 0, ending)
+                stdscr.refresh()
+                times += 1
+                time.sleep(delay)
+            if close == True:
+                if time.time() > end_time:
+                    stdscr.refresh()
+                    info_text = f'Closing game and exiting'
+                    ending = f'Thanks for using my toll :)'
+                    stdscr.addstr(12, 0, info_text)
+                    stdscr.addstr(13, 0, ending)
+                    stdscr.refresh()
+                    time.sleep(3)
+                    subprocess.call(["taskkill", "/F", "/IM", "forza_gaming.desktop.x64_release_final.exe"])
+                    time.sleep(2)
+                    exit(69)
+            if time.time() > end_time:
+                stdscr.refresh()
+                ending = f'Thanks for using my toll :)'
+                stdscr.addstr(12, 0, ending)
+                stdscr.refresh()
+                time.sleep(3)
+                curses.noecho()
+            else:
+                pass
     except KeyboardInterrupt:
         pass
 
@@ -81,7 +124,7 @@ def main(stdscr):
         stdscr.nodelay(1)
         stdscr.clear()
 
-        options = ["[1] Anti AFK", "[2] Calculate Time", "[3] Github", "[q] Exit"]
+        options = ["[1]     Anti AFK", "   [2]  Calculate Time", "[3]     Setup  ", '[4]     Github ',"[q]     Exit   "]
         current_option = 0
         stdscr.clear()
         height, width = stdscr.getmaxyx()
@@ -113,8 +156,10 @@ def main(stdscr):
                 execute_option1(stdscr)
             elif key == ord("2"):
                 execute_option2(stdscr)
-            elif key == ord("3"):
+            elif key == ord("4"):
                 os.system('start www.github.com/Buck3ts41')
+            elif key == ord("3"):
+                execute_option3(stdscr)
             elif key == ord("q") or key == ord("Q"):
                 break
     except Exception as e:
