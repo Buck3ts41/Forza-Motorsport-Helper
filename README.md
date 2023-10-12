@@ -14,9 +14,9 @@ For now it has 4 options:
 
 If you found some bugs, please report them to my github page.
 
-#Use the 3rd option first!!
+# Use the 3rd option first!!
 
-#Usage
+# Usage
 Start the start.bat file.
 
 Unknowcheats: 
