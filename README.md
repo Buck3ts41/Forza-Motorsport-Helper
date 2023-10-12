@@ -1,5 +1,6 @@
 # Forza-Motorsport-Helper
 I'm releasing it because I found it useful. Maybe it can help you too. Planning on updating it with other features...
+removed the release for unknowncheats.
 
 For now it has 4 options:
 
